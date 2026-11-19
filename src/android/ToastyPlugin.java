@@ -2,7 +2,7 @@
 // 목적: JS의 cordova.exec(..., "ToastyPlugin", "show", [message, duration]) 호출을 처리하여
 //       안드로이드 Toast를 표시합니다.
 
-package com.asher27.cordova.plugin;
+package com.lucle.cordova.plugin;
 
 import android.widget.Toast;
 import android.text.TextUtils;
