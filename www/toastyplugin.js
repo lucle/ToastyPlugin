@@ -84,7 +84,7 @@ var toastyPlugin = (function () {
                     },
                     'ToastyPlugin',
                     'show',
-                    [message + ' -> version tagging 2.0', dur]
+                    [message, dur]
                 );
             });
         },
