@@ -15,11 +15,12 @@ import org.json.JSONObject;
 public class ToastyPlugin extends CordovaPlugin {
 
     private static final String ACTION_SHOW = "show";
+    private static final String DURATION_LONG = "long";
 
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         // Verify that the user sent a 'show' action
-          if (!action.equals("show")) {
+          if (!ACTION_SHOW.equals(intent.getAction())) {
             callbackContext.error("\"" + action + "\" is not a recognized action.");
             return false;
           }
