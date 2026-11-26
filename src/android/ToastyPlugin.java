@@ -20,7 +20,7 @@ public class ToastyPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         // Verify that the user sent a 'show' action
-          if (!ACTION_SHOW.equals(intent.getAction())) {
+          if (!ACTION_SHOW.equals(action)) {
             callbackContext.error("\"" + action + "\" is not a recognized action.");
             return false;
           }
