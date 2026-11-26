@@ -1,14 +1,16 @@
-// src/android/ToastyPlugin.java
-// 목적: JS의 cordova.exec(..., "ToastyPlugin", "show", [message, duration]) 호출을 처리하여
-//       안드로이드 Toast를 표시합니다.
+
 
 package com.lucle.cordova.plugin;
 
+// The native Toast API
 import android.widget.Toast;
-import android.text.TextUtils;
-import org.apache.cordova.*;
+// Cordova-required packages
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ToastyPlugin extends CordovaPlugin {
 
@@ -16,31 +18,29 @@ public class ToastyPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
-        if (ACTION_SHOW.equals(action)) {
-            // 파라미터: [message, duration]
-            final String message  = args.optString(0, "");
-            final String duration = args.optString(1, "short"); // "short" | "long"
-
-            if (TextUtils.isEmpty(message)) {
-                callbackContext.error("Message is empty.");
-                return true;
-            }
-
-            // UI 스레드에서 Toast 표시
-            cordova.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    int toastDuration = "long".equalsIgnoreCase(duration) ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT;
-                    Toast.makeText(cordova.getActivity().getApplicationContext(), message, toastDuration).show();
-                    callbackContext.success(); // 성공 신호
-                }
-            });
-
-            return true; // 처리 완료
-        }
-
-        // 지원하지 않는 action
-        callbackContext.error("Unknown action: " + action);
-        return false;
+        // Verify that the user sent a 'show' action
+          if (!action.equals("show")) {
+            callbackContext.error("\"" + action + "\" is not a recognized action.");
+            return false;
+          }
+          String message;
+          String duration;
+          try {
+            JSONObject options = args.getJSONObject(0);
+            message = options.getString("message");
+            duration = options.getString("duration");
+          } catch (JSONException e) {
+            callbackContext.error("Error encountered: " + e.getMessage());
+            return false;
+          }
+          // Create the toast
+          Toast toast = Toast.makeText(cordova.getActivity(), message,
+            DURATION_LONG.equals(duration) ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+          // Display toast
+          toast.show();
+          // Send a positive result to the callbackContext
+          PluginResult pluginResult = new PluginResult(PluginResult.Status.OK);
+          callbackContext.sendPluginResult(pluginResult);
+          return true;
     }
 }
